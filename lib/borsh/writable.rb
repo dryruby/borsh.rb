@@ -19,6 +19,11 @@ module Borsh::Writable
     end
   end
 
+  def write_unit()
+    # nothing to write
+  end
+  alias_method :write_nil, :write_unit
+
   def write_bool(x)
     self.write_u8(x ? 1 : 0)
   end
@@ -80,8 +85,9 @@ module Borsh::Writable
     self.write([f].pack('E'))
   end
 
-  def write_unit()
-    # nothing to write
+  def write_string(x)
+    self.write_u32(x.bytesize)
+    self.write(x)
   end
 
   def write_array(x)
@@ -162,10 +168,5 @@ module Borsh::Writable
     ok, value = x
     self.write_u8(ok ? 1 : 0)
     self.write_object(value)
-  end
-
-  def write_string(x)
-    self.write_u32(x.bytesize)
-    self.write(x)
   end
 end # Borsh::Writable

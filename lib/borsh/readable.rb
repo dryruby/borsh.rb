@@ -37,6 +37,11 @@ module Borsh::Readable
     end
   end
 
+  def read_unit
+    nil
+  end
+  alias_method :read_nil, :read_unit
+
   def read_bool
     self.read_u8 == 1
   end
@@ -99,8 +104,8 @@ module Borsh::Readable
     self.read(8).unpack('E').first
   end
 
-  def read_unit
-    nil
+  def read_string
+    self.read(self.read_u32)
   end
 
   def read_array(element_type, count)
@@ -162,9 +167,5 @@ module Borsh::Readable
     type = ok ? ok_type : err_type
     value = self.read_object(type)
     [ok, value]
-  end
-
-  def read_string
-    self.read(self.read_u32)
   end
 end # Borsh::Readable

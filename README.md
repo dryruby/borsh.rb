@@ -42,6 +42,34 @@ $stdin.extend(Borsh::Readable)
 p $stdin.read_string
 ```
 
+## 📚 Reference
+
+| Informal Type | `Borsh::Writable` | `Borsh::Readable` |
+| :------------ | :---------------- | :---------------- |
+| nil/unit | `write_unit()` | `read_unit()` |
+| boolean | `write_bool(x)` | `read_bool()` |
+| u8 integer | `write_u8(n)` | `read_u8()` |
+| u16 integer | `write_u16(n)` | `read_u16()` |
+| u32 integer | `write_u32(n)` | `read_u32()` |
+| u64 integer | `write_u64(n)` | `read_u64()` |
+| u128 integer | `write_u128(n)` | `read_u128()` |
+| i8 integer | `write_i8(n)` | `read_i8()` |
+| i16 integer | `write_i16(n)` | `read_i16()` |
+| i32 integer | `write_i32(n)` | `read_i32()` |
+| i64 integer | `write_i64(n)` | `read_i64()` |
+| i128 integer | `write_i128(n)` | `read_i128()` |
+| f32 float | `write_f32(f)` | `read_f32()` |
+| f64 float | `write_f64(f)` | `read_f64()` |
+| string | `write_string(x)` | `read_string()` |
+| array | `write_array(x)` | `read_array(element_type, count)` |
+| vector | `write_vector(x)` | `read_vector(element_type)` |
+| struct | `write_struct(x)` | `read_struct(struct_class)` |
+| enum | `write_enum(x)` | `read_enum(variants)` |
+| map/hash | `write_map(x)` | `read_map(key_type, value_type)` |
+| set | `write_set(x)` | `read_set(element_type)` |
+| option | `write_option(x)` | `read_option(element_type)` |
+| result | `write_result(x)` | `read_result(ok_type, err_type)` |
+
 ## 👨‍💻 Development
 
 ```bash
