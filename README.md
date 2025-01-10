@@ -28,6 +28,20 @@ gem install borsh
 require 'borsh'
 ```
 
+### Writing an output stream
+
+```ruby
+$stdout.extend(Borsh::Writable)
+$stdout.write_string("Hello, world!")
+```
+
+### Reading an input stream
+
+```ruby
+$stdin.extend(Borsh::Readable)
+p $stdin.read_string
+```
+
 ## 👨‍💻 Development
 
 ```bash
