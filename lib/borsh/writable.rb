@@ -7,16 +7,20 @@ module Borsh::Writable
     x = x.to_borsh if x.respond_to?(:to_borsh)
     case x
       when NilClass   then self.write_unit()
-      when FalseClass then self.write_u8(0)
-      when TrueClass  then self.write_u8(1)
+      when FalseClass then self.write_bool(x)
+      when TrueClass  then self.write_bool(x)
       when Integer    then self.write_i64(x)
       when Float      then self.write_f64(x)
       when String     then self.write_string(x)
       when Array      then self.write_vector(x)
-      when Hash       then self.write_hash_map(x)
-      when Set        then self.write_hash_set(x)
+      when Hash       then self.write_map(x)
+      when Set        then self.write_set(x)
       else raise "unsupported type: #{x.class}"
     end
+  end
+
+  def write_bool(x)
+    self.write_u8(x ? 1 : 0)
   end
 
   def write_u8(n)
@@ -81,17 +85,17 @@ module Borsh::Writable
   end
 
   def write_array(x)
-    x.each { |e| e.write_object(self) }
+    x.each { |e| self.write_object(e) }
   end
 
   def write_vector(x)
     self.write_u32(x.size)
-    x.each { |e| e.write_object(self) }
+    x.each { |e| self.write_object(e) }
   end
   alias_method :write_vec, :write_vector
 
   def write_struct(x)
-    unless x.is_a?(Struct) raise "value must be a Struct"
+    raise "value must be a Struct" unless x.is_a?(Struct)
 
     x.members.each do |k|
       self.write_object(x[k])
@@ -109,7 +113,7 @@ module Borsh::Writable
     self.write_object(value)
   end
 
-  def write_hash_map(x)
+  def write_map(x)
     self.write_u32(x.size)
     case x
       when Array
@@ -125,9 +129,9 @@ module Borsh::Writable
       else raise "unsupported type: #{x.class}"
     end
   end
-  alias_method :write_hash, :write_hash_map
+  alias_method :write_hash, :write_map
 
-  def write_hash_set(x)
+  def write_set(x)
     self.write_u32(x.size)
     keys = case x
       when Array then x
