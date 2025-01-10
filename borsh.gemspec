@@ -3,16 +3,16 @@ Gem::Specification.new do |gem|
   gem.date               = File.mtime('VERSION').strftime('%Y-%m-%d')
 
   gem.name               = "borsh"
-  gem.homepage           = "https://github.com/artob/borsh.rb"
+  gem.homepage           = "https://github.com/dryruby/borsh.rb"
   gem.license            = "Unlicense"
   gem.summary            = "Borsh for Ruby"
   gem.description        = "A Ruby library for the Borsh binary serialization format."
   gem.metadata           = {
-    'bug_tracker_uri'   => "https://github.com/artob/borsh.rb/issues",
-    'changelog_uri'     => "https://github.com/artob/borsh.rb/blob/master/CHANGES.md",
-    'documentation_uri' => "https://github.com/artob/borsh.rb/blob/master/README.md",
+    'bug_tracker_uri'   => "https://github.com/dryruby/borsh.rb/issues",
+    'changelog_uri'     => "https://github.com/dryruby/borsh.rb/blob/master/CHANGES.md",
+    'documentation_uri' => "https://github.com/dryruby/borsh.rb/blob/master/README.md",
     'homepage_uri'      => gem.homepage,
-    'source_code_uri'   => "https://github.com/artob/borsh.rb",
+    'source_code_uri'   => "https://github.com/dryruby/borsh.rb",
   }
 
   gem.author             = "Arto Bendiken"
