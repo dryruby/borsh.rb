@@ -36,7 +36,13 @@ module Borsh::Writable
   end
 
   def write_u128(n)
-    raise "not implemented yet" # TODO
+    # Split 128-bit number into two 64-bit parts:
+    lower = n & ((1 << 64) - 1)
+    upper = (n >> 64) & ((1 << 64) - 1)
+    # Write the lower 64 bits first (little-endian):
+    self.write_u64(lower)
+    # Then write the upper 64 bits:
+    self.write_u64(upper)
   end
 
   def write_i8(n)
@@ -56,7 +62,10 @@ module Borsh::Writable
   end
 
   def write_i128(n)
-    raise "not implemented yet" # TODO
+    # Convert negative numbers to two's complement:
+    n = (1 << 128) + n if n < 0
+    # Use `#write_u128` to write the bits:
+    self.write_u128(n)
   end
 
   def write_f32(f)
@@ -82,11 +91,22 @@ module Borsh::Writable
   alias_method :write_vec, :write_vector
 
   def write_struct(x)
-    raise "not implemented yet" # TODO
+    unless x.is_a?(Struct) raise "value must be a Struct"
+
+    x.members.each do |k|
+      self.write_object(x[k])
+    end
   end
 
   def write_enum(x)
-    raise "not implemented yet" # TODO
+    # An enum should be represented as `[ordinal, value]`:
+    unless x.is_a?(Array) && x.size == 2 && x[0].is_a?(Integer)
+      raise "enum must be [ordinal, value]"
+    end
+
+    ordinal, value = x
+    self.write_u8(ordinal)
+    self.write_object(value)
   end
 
   def write_hash_map(x)
@@ -130,7 +150,14 @@ module Borsh::Writable
   end
 
   def write_result(x)
-    raise "not implemented yet" # TODO
+    # A result should be represented as `[ok, value]`:
+    unless x.is_a?(Array) && x.size == 2
+      raise "result must be [ok, value]"
+    end
+
+    ok, value = x
+    self.write_u8(ok ? 1 : 0)
+    self.write_object(value)
   end
 
   def write_string(x)
