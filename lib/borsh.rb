@@ -2,5 +2,6 @@
 
 module Borsh; end
 
-require 'borsh/readable'
-require 'borsh/writable'
+require_relative 'borsh/buffer'
+require_relative 'borsh/readable'
+require_relative 'borsh/writable'
