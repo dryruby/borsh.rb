@@ -6,11 +6,11 @@ Gem::Specification.new do |gem|
   gem.homepage           = "https://github.com/dryruby/borsh.rb"
   gem.license            = "Unlicense"
   gem.summary            = "Borsh for Ruby"
-  gem.description        = "A Ruby library for the Borsh binary serialization format."
+  gem.description        = "A Ruby library for encoding and decoding data in the Borsh binary serialization format designed for security-critical projects."
   gem.metadata           = {
     'bug_tracker_uri'   => "https://github.com/dryruby/borsh.rb/issues",
     'changelog_uri'     => "https://github.com/dryruby/borsh.rb/blob/master/CHANGES.md",
-    'documentation_uri' => "https://github.com/dryruby/borsh.rb/blob/master/README.md",
+    'documentation_uri' => "https://rubydoc.info/gems/borsh",
     'homepage_uri'      => gem.homepage,
     'source_code_uri'   => "https://github.com/dryruby/borsh.rb",
   }

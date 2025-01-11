@@ -3,14 +3,26 @@
 [![License](https://img.shields.io/badge/license-Public%20Domain-blue.svg)](https://unlicense.org)
 [![Compatibility](https://img.shields.io/badge/ruby-2.6%2B-blue)](https://rubygems.org/gems/borsh)
 [![Package](https://img.shields.io/gem/v/borsh)](https://rubygems.org/gems/borsh)
+[![Documentation](https://img.shields.io/badge/rubydoc-latest-blue)](https://rubydoc.info/gems/borsh)
 
-A Ruby library for the [Borsh] binary serialization format.
+**Borsh.rb** is a [Ruby] library for encoding and decoding data in the
+[Borsh] binary serialization format designed for security-critical
+projects where consistency, safety, and performance matter.
 
-[Borsh]: https://borsh.io
+## ✨ Features
+
+- 100% pure Ruby with zero dependencies and no bloat.
+- Implements the full Borsh specification with support for every type.
+- Supports both in-memory buffers and I/O streams for serialization.
+- Provides a simple and intuitive API for reading and writing data.
+- Provides a convenient buffer interface layered on top of `StringIO`.
+- Supports customizable serialization using the `#to_borsh` protocol.
+- Plays nice with others: entirely contained in the `Borsh` module.
+- 100% free and unencumbered public domain software.
 
 ## 🛠️ Prerequisites
 
-- [Ruby](https://ruby-lang.org) 2.6+
+- [Ruby] 2.6+
 
 ## ⬇️ Installation
 
@@ -82,14 +94,14 @@ Borsh::Buffer.new(serialized_data) do |buf|
 end
 ```
 
-### Writing to an output stream
+### Writing to any output stream
 
 ```ruby
 $stdout.extend(Borsh::Writable)
 $stdout.write_string("Hello, world!")
 ```
 
-### Reading from an input stream
+### Reading from any input stream
 
 ```ruby
 $stdin.extend(Borsh::Readable)
@@ -136,3 +148,6 @@ git clone https://github.com/dryruby/borsh.rb.git
 [![Share on Reddit](https://img.shields.io/badge/share%20on-reddit-red?logo=reddit)](https://reddit.com/submit?url=https://github.com/dryruby/borsh.rb&title=Borsh+for+Ruby)
 [![Share on Hacker News](https://img.shields.io/badge/share%20on-hacker%20news-orange?logo=ycombinator)](https://news.ycombinator.com/submitlink?u=https://github.com/dryruby/borsh.rb&t=Borsh+for+Ruby)
 [![Share on Facebook](https://img.shields.io/badge/share%20on-facebook-1976D2?logo=facebook)](https://www.facebook.com/sharer/sharer.php?u=https://github.com/dryruby/borsh.rb)
+
+[Borsh]: https://borsh.io
+[Ruby]: https://ruby-lang.org
