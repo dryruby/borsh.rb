@@ -118,19 +118,13 @@ module Borsh::Readable
   end
   alias_method :read_vec, :read_vector
 
-  def read_struct(struct_class)
-    values = struct_class.members.map { |member|
-      type = struct_class::MEMBER_TYPES.fetch(member)
-      self.read_object(type)
-    }
-    struct_class.new(*values)
-  end
-
-  def read_enum(variants)
-    ordinal = self.read_u8
-    type = variants.fetch(ordinal)
-    value = self.read_object(type)
-    [ordinal, value]
+  def read_set(element_type)
+    count = self.read_u32
+    result = Set.new
+    count.times do
+      result << self.read_object(element_type)
+    end
+    result
   end
 
   def read_map(key_type, value_type)
@@ -145,15 +139,6 @@ module Borsh::Readable
   end
   alias_method :read_hash, :read_map
 
-  def read_set(element_type)
-    count = self.read_u32
-    result = Set.new
-    count.times do
-      result << self.read_object(element_type)
-    end
-    result
-  end
-
   def read_option(element_type)
     if self.read_bool
       self.read_object(element_type)
@@ -162,10 +147,25 @@ module Borsh::Readable
     end
   end
 
-  def read_result(ok_type, err_type)
+  def read_result(ok_type, err_type = ok_type)
     ok = self.read_bool
     type = ok ? ok_type : err_type
     value = self.read_object(type)
     [ok, value]
+  end
+
+  def read_enum(variants)
+    ordinal = self.read_u8
+    type = variants.fetch(ordinal)
+    value = self.read_object(type)
+    [ordinal, value]
+  end
+
+  def read_struct(struct_class)
+    values = struct_class.members.map { |member|
+      type = struct_class::MEMBER_TYPES.fetch(member)
+      self.read_object(type)
+    }
+    struct_class.new(*values)
   end
 end # Borsh::Readable

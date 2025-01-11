@@ -101,23 +101,17 @@ module Borsh::Writable
   end
   alias_method :write_vec, :write_vector
 
-  def write_struct(x)
-    raise "value must be a Struct" unless x.is_a?(Struct)
-
-    x.members.each do |k|
-      self.write_object(x[k])
+  def write_set(x)
+    self.write_u32(x.size)
+    keys = case x
+      when Array then x
+      when Hash then x.keys
+      when Set then x.to_a
+      else raise "unsupported type: #{x.class}"
     end
-  end
-
-  def write_enum(x)
-    # An enum should be represented as `[ordinal, value]`:
-    unless x.is_a?(Array) && x.size == 2 && x[0].is_a?(Integer)
-      raise "enum must be [ordinal, value]"
+    keys.sort.each do |k|
+      self.write_object(k)
     end
-
-    ordinal, value = x
-    self.write_u8(ordinal)
-    self.write_object(value)
   end
 
   def write_map(x)
@@ -138,19 +132,6 @@ module Borsh::Writable
   end
   alias_method :write_hash, :write_map
 
-  def write_set(x)
-    self.write_u32(x.size)
-    keys = case x
-      when Array then x
-      when Hash then x.keys
-      when Set then x.to_a
-      else raise "unsupported type: #{x.class}"
-    end
-    keys.sort.each do |k|
-      self.write_object(k)
-    end
-  end
-
   def write_option(x)
     if !x.nil?
       self.write_u8(1)
@@ -169,5 +150,24 @@ module Borsh::Writable
     ok, value = x
     self.write_u8(ok ? 1 : 0)
     self.write_object(value)
+  end
+
+  def write_enum(x)
+    # An enum should be represented as `[ordinal, value]`:
+    unless x.is_a?(Array) && x.size == 2 && x[0].is_a?(Integer)
+      raise "enum must be [ordinal, value]"
+    end
+
+    ordinal, value = x
+    self.write_u8(ordinal)
+    self.write_object(value)
+  end
+
+  def write_struct(x)
+    raise "value must be a Struct" unless x.is_a?(Struct)
+
+    x.members.each do |k|
+      self.write_object(x[k])
+    end
   end
 end # Borsh::Writable

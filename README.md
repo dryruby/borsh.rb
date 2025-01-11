@@ -28,20 +28,6 @@ gem install borsh
 require 'borsh'
 ```
 
-### Writing to an output stream
-
-```ruby
-$stdout.extend(Borsh::Writable)
-$stdout.write_string("Hello, world!")
-```
-
-### Reading from an input stream
-
-```ruby
-$stdin.extend(Borsh::Readable)
-p $stdin.read_string
-```
-
 ### Writing to an in-memory buffer
 
 ```ruby
@@ -50,6 +36,8 @@ serialized_data = Borsh::Buffer.open do |buf|
   buf.write_bool(true)
   buf.write_u8(255)
   buf.write_i32(-12345)
+  buf.write_u128(2**100)
+  buf.write_i128(-2**100)
   buf.write_f64(3.14159)
   buf.write_string("Hello, Borsh!")
 
@@ -58,6 +46,12 @@ serialized_data = Borsh::Buffer.open do |buf|
 
   # Dynamic-sized array (array with a length prefix):
   buf.write_vector(['a', 'b', 'c'])
+
+  # Set of integers:
+  buf.write_set(Set.new([1, 2, 3]))
+
+  # Map with string keys and integer values:
+  buf.write_map({a: 1, b: 2})
 end
 ```
 
@@ -69,15 +63,37 @@ Borsh::Buffer.new(serialized_data) do |buf|
   bool_val = buf.read_bool             # => true
   u8_val = buf.read_u8                 # => 255
   i32_val = buf.read_i32               # => -12345
+  u128_val = buf.read_u128             # => 2**100
+  i128_val = buf.read_i128             # => -2**100
   f64_val = buf.read_f64               # => 3.14159
   string_val = buf.read_string         # => "Hello, Borsh!"
 
   # Fixed-size array:
-  array = buf.read_array(:i32, 3)      # => [1, 2, 3]
+  array = buf.read_array(:i64, 3)      # => [1, 2, 3]
 
   # Dynamic-sized array (array with a length prefix):
   vector = buf.read_vector(:string)    # => ['a', 'b', 'c']
+
+  # Set of integers:
+  set = buf.read_set(:i64)             # => Set.new([1, 2, 3])
+
+  # Map with string keys and integer values:
+  map = buf.read_map(:string, :i64)    # => {'a' => 1, 'b' => 2}
 end
+```
+
+### Writing to an output stream
+
+```ruby
+$stdout.extend(Borsh::Writable)
+$stdout.write_string("Hello, world!")
+```
+
+### Reading from an input stream
+
+```ruby
+$stdin.extend(Borsh::Readable)
+puts $stdin.read_string
 ```
 
 ## 📚 Reference
@@ -101,12 +117,12 @@ end
 | string | `write_string(x)` | `read_string()` |
 | array | `write_array(x)` | `read_array(element_type, count)` |
 | vector | `write_vector(x)` | `read_vector(element_type)` |
-| struct | `write_struct(x)` | `read_struct(struct_class)` |
-| enum | `write_enum(x)` | `read_enum(variants)` |
-| map/hash | `write_map(x)` | `read_map(key_type, value_type)` |
 | set | `write_set(x)` | `read_set(element_type)` |
+| map/hash | `write_map(x)` | `read_map(key_type, value_type)` |
 | option | `write_option(x)` | `read_option(element_type)` |
-| result | `write_result(x)` | `read_result(ok_type, err_type)` |
+| result | `write_result([ok, value])` | `read_result(ok_type, err_type)` |
+| enum | `write_enum([ordinal, value])` | `read_enum(variants)` |
+| struct | `write_struct(x)` | `read_struct(struct_class)` |
 
 ## 👨‍💻 Development
 
