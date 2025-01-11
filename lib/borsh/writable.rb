@@ -11,6 +11,7 @@ module Borsh::Writable
       when TrueClass  then self.write_bool(x)
       when Integer    then self.write_i64(x)
       when Float      then self.write_f64(x)
+      when Symbol     then self.write_string(x.to_s)
       when String     then self.write_string(x)
       when Array      then self.write_vector(x)
       when Hash       then self.write_map(x)
