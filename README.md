@@ -28,18 +28,56 @@ gem install borsh
 require 'borsh'
 ```
 
-### Writing an output stream
+### Writing to an output stream
 
 ```ruby
 $stdout.extend(Borsh::Writable)
 $stdout.write_string("Hello, world!")
 ```
 
-### Reading an input stream
+### Reading from an input stream
 
 ```ruby
 $stdin.extend(Borsh::Readable)
 p $stdin.read_string
+```
+
+### Writing to an in-memory buffer
+
+```ruby
+serialized_data = Borsh::Buffer.open do |buf|
+  # Primitive types:
+  buf.write_bool(true)
+  buf.write_u8(255)
+  buf.write_i32(-12345)
+  buf.write_f64(3.14159)
+  buf.write_string("Hello, Borsh!")
+
+  # Fixed-size array:
+  buf.write_array([1, 2, 3])
+
+  # Dynamic-sized array (array with a length prefix):
+  buf.write_vector(['a', 'b', 'c'])
+end
+```
+
+### Reading from an in-memory buffer
+
+```ruby
+Borsh::Buffer.new(serialized_data) do |buf|
+  # Primitive types:
+  bool_val = buf.read_bool             # => true
+  u8_val = buf.read_u8                 # => 255
+  i32_val = buf.read_i32               # => -12345
+  f64_val = buf.read_f64               # => 3.14159
+  string_val = buf.read_string         # => "Hello, Borsh!"
+
+  # Fixed-size array:
+  array = buf.read_array(:i32, 3)      # => [1, 2, 3]
+
+  # Dynamic-sized array (array with a length prefix):
+  vector = buf.read_vector(:string)    # => ['a', 'b', 'c']
+end
 ```
 
 ## 📚 Reference
