@@ -4,4 +4,5 @@ module Borsh; end
 
 require_relative 'borsh/buffer'
 require_relative 'borsh/readable'
+require_relative 'borsh/sizer'
 require_relative 'borsh/writable'
