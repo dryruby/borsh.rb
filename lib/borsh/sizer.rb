@@ -8,32 +8,32 @@ class Borsh::Sizer
   include Borsh::Writable
 
   ##
-  # @param [String, #to_s, nil] data
   # @yield [buffer]
-  # @yieldreturn [Object]
-  # @return [String]
-  def self.open(data = nil, &block)
-    buffer = self.new(data || '', &block)
+  # @yieldparam [Borsh::Sizer] buffer
+  # @yieldreturn [void]
+  # @return [Integer]
+  def self.open(&block)
+    buffer = self.new(&block)
     buffer.close
-    buffer.data
+    buffer.bytesize
   end
 
   ##
-  # @param [String, #to_s] data
   # @yield [buffer]
+  # @yieldparam [Borsh::Sizer] buffer
   # @yieldreturn [void]
   # @return [void]
-  def initialize(data = '', &block)
-    @bytesize = data.to_s.bytesize
-    @closed = false
+  def initialize(&block)
+    self.reset!
     block.call(self) if block_given?
   end
 
   ##
-  # Returns the buffer data.
+  # Returns the buffer size in bytes.
   #
-  # @return [String]
+  # @return [Integer]
   attr_reader :bytesize
+  alias_method :size, :bytesize
 
   ##
   # Returns `true` if the buffer is closed.
@@ -53,6 +53,15 @@ class Borsh::Sizer
   # @param [String, #to_s] data
   # @return [Integer]
   def write(data)
+    raise IOError, "closed stream" if self.closed?
     @bytesize += data.to_s.bytesize
+  end
+
+  ##
+  # @return [Integer]
+  def reset!
+    result = @bytesize
+    @bytesize, @closed = 0, false
+    result
   end
 end # Borsh::Sizer
