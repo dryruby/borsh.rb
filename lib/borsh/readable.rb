@@ -105,7 +105,7 @@ module Borsh::Readable
   end
 
   def read_string
-    self.read(self.read_u32)
+    self.read(self.read_u32).force_encoding('UTF-8')
   end
 
   def read_array(element_type, count)
